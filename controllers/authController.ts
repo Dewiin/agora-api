@@ -3,6 +3,7 @@ import { prisma } from "../config/prismaClient"
 
 // services
 import { generateTokens } from "../services/auth";
+import { createSession } from "../services/auth";
 
 // types
 import type { Request, Response } from "express"
@@ -30,6 +31,7 @@ async function signup(
         });
 
         const { accessToken, refreshToken } = generateTokens(user);
+        createSession(user, refreshToken);
 
         return res
         .status(200)
