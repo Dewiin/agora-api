@@ -1,0 +1,20 @@
+import jwt from "jsonwebtoken"
+
+// types
+import type { User } from "../generated/prisma/client";
+
+export function generateTokens(user: User) {
+    const accessToken = jwt.sign(
+        { userId: user.id },
+        process.env.JWT_SECRET!,
+        { expiresIn: "15m" }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: user.id },
+        process.env.JWT_REFRESH_SECRET!,
+        { expiresIn: "30d" }
+    );
+
+    return { accessToken, refreshToken };
+}

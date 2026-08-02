@@ -2,6 +2,10 @@ import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 
+// config
+import "./config/passportConfig"
+import "./config/redisConfig"
+
 const app = express();
 
 const allowedOrigins = [
