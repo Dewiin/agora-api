@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs"
 import { prisma } from "./prismaClient"
 
 // services
-import { generateUsername } from "../services/generateUsername"
+import { generateUsername } from "@/services/generateUsername"
 
 // strategies
 import { Strategy as LocalStrategy } from "passport-local"
@@ -17,14 +17,14 @@ import type { VerifyCallback as GithubVerifyCallback } from "passport-oauth2";
 import type { Profile as GithubProfile } from "passport-github";
 
 async function localVerifyFunction(
-    email: string, 
+    username: string, 
     password: string, 
     done: (error: any, user?: Express.User | false, options?: IVerifyOptions) => void 
 ) {
     try {
         const user = await prisma.user.findUnique({
             where: { 
-                email,
+                username,
                 provider: "LOCAL"
             }
         });
@@ -103,9 +103,7 @@ async function githubVerifyFunction(
     }
 }
 
-passport.use("local", new LocalStrategy({
-    usernameField: "email",
-}, localVerifyFunction));
+passport.use("local", new LocalStrategy(localVerifyFunction));
 passport.use("google", new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,

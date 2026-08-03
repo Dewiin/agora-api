@@ -1,4 +1,3 @@
-import { url } from 'inspector';
 import { createClient } from 'redis';
 
 export const redis = createClient({
