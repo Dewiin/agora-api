@@ -37,3 +37,9 @@ export async function createSession(user: User, refreshToken: string) {
         }
     );
 }
+
+export async function deleteSession(user: User) {
+    const key = `refresh:${user.id}`;
+
+    await redis.del(key);
+}

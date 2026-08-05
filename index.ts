@@ -6,6 +6,9 @@ import cookieParser from "cookie-parser"
 import "./config/passportConfig"
 import "./config/redisConfig"
 
+// routers
+import { authRouter } from "./routers/authRouter"
+
 const app = express();
 
 const allowedOrigins = [
@@ -27,7 +30,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // routes
-
+app.get("/api", (req, res) => res.status(200).json({message: "Welcome to the API."}));
+app.use("/api/auth", authRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on Port ${PORT}`));

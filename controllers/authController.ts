@@ -4,7 +4,7 @@ import { prisma } from "@/config/prismaClient"
 
 // services
 import { generateTokens } from "@/services/auth";
-import { createSession } from "@/services/auth";
+import { createSession, deleteSession } from "@/services/auth";
 
 // types
 import type { Request, Response } from "express"
@@ -68,8 +68,6 @@ async function login(
     res: Response
 ) {
     try {
-        const { username, password } = req.body;
-
         passport.authenticate("local", async (err: any, user: User, info: any) => {
             if(err) return res.status(500).json({ message: "Authentication failed." });
             if(!user) return res.status(400).json({ message: info.message });
@@ -105,9 +103,31 @@ async function login(
     }
 }
 
+async function logout(
+    req: Request,
+    res: Response
+) {
+    try {
+        const user = req.user as User;
 
+        await deleteSession(user);
+        
+        return res.status(200)
+        .clearCookie("refreshToken")
+        .clearCookie("accessToken")
+        .json({
+            message: "User successfully logged out!"
+        });
+    } catch(err) {
+        console.error("Error in logout: ", err);
+        return res.status(500).json({
+            message: "Server error logging out."
+        });
+    }
+}
 
 export const authController = {
     signup,
-    login
+    login,
+    logout
 }
